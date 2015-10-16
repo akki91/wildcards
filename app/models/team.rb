@@ -21,11 +21,12 @@ class Team < ActiveRecord::Base
    		"profile_url" => user.profile_url
    	}
    end
-   result["member"] = info
+   result["members"] = info
    return result
   end
 
   def create
+
 
 
   end
