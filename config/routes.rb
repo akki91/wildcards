@@ -1,7 +1,8 @@
 Rails.application.routes.draw do
   
 
-  get  '/callback'                => 'login#git_callback'
+  get  '/callback'      => 'login#git_callback'
+  post 'webhooks'       => 'webhooks#create'
 
 
   # The priority is based upon order of creation: first created -> highest priority.
@@ -58,6 +59,4 @@ Rails.application.routes.draw do
   #     # (app/controllers/admin/products_controller.rb)
   #     resources :products
   #   end
-  resources :tests
-  resources :pull_requests
 end
