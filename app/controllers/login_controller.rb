@@ -7,11 +7,20 @@ class LoginController < ApplicationController
       {:client_id => "cffe0ca2e4b88babd27c",
        :client_secret => "1599750bea795965735cbf9391c72f648f6c1327",
        :code => session_code},
-       :accept => :json)
+    :accept => :json)
     access_token = JSON.parse(result)['access_token']
     redirect_to "http://localhost:4000?#{access_token}"
   end
 
+  def set_token_in_redis token
+    redis = Redis.new
+    expires_in = 15.minutes.to_i
+    token_data = Hash.new
+    expires_at = (Time.now+expires_in.seconds).to_i
+    redis.hset("token",key,value)
+    redis.expireat(token,expires_at)
+  end
+
+
 
 end
-
