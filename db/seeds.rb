@@ -5,3 +5,6 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
+Status.create([{name:"Open"},{name:"Closed"}])
+PullRequestType.create([{name:"Bug"},{name:"Feature"}])
+Check.create([{name:"Test"},{name:"Documentation"},{name:"QA Passed"},{name:"Code Quality"}])
