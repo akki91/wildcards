@@ -9,7 +9,7 @@ class LoginController < ApplicationController
        :code => session_code},
     :accept => :json)
     access_token = JSON.parse(result)['access_token']
-    redirect_to "http://localhost:4000?#{access_token}"
+    redirect_to "http://localhost:4000/github-token/#{access_token}"
   end
 
   def set_token_in_redis token
