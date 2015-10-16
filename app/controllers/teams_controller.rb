@@ -3,8 +3,18 @@ class TeamsController < ApplicationController
   protect_from_forgery with: :null_session
 
   def index
-    render json: {}, status: 200
-  end
+    teams = Team.all
+   # debugger
+    response = Hash.new
+    responses = Array.new
+    teams.each do |team|
+      details = Team.get_team_details(team)
+      responses << details
+    end
+    result = {}
+    result[:data] = responses 
+    render json: result, status: :ok
+   end
 
   def create
     render json: {}, status: 200
