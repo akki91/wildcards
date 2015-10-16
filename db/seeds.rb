@@ -1,7 +1,7 @@
-Status.create([{name:"Open"},{name:"Closed"}, {name:"Merged"}])
-PullRequestType.create([{name:"Bug"},{name:"Feature"}])
-Check.create([{name:"Test"},{name:"Documentation"},{name:"QA Passed"},{name:"Code Quality"}])
-Profile.create([{name:"DEVELOPER"},{name:"QA"}])
+# Status.create([{name:"Open"},{name:"Closed"}, {name:"Merged"}])
+# PullRequestType.create([{name:"Bug"},{name:"Feature"}])
+# Check.create([{name:"Test"},{name:"Documentation"},{name:"QA Passed"},{name:"Code Quality"}])
+# Profile.create([{name:"DEVELOPER"},{name:"QA"}])
 
 # puts "profiles finished"
 
@@ -21,7 +21,6 @@ Profile.create([{name:"DEVELOPER"},{name:"QA"}])
 #     "git_username" => "username_#{no}",
 #     "profile_url" => "https://github.com/kbkailashbagaria",
 #     "profile_id" => rand(1..2),
-#     "team_id" => rand(1..20),
 #     "avatar_url" => "https://avatars0.githubusercontent.com/u/4344556?v=3&s=460"
 #   })
 # end
