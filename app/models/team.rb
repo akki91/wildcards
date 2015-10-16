@@ -12,15 +12,24 @@ class Team < ActiveRecord::Base
    	members = []
    	user_id = TeamMember.where(:id => team.id).pluck(:user_id)
    	users  = User.find(user_id)
-   	info = {}
+   	info = []
    	users.map do |user|
-   	info = { 
+   	info << { 
    		"name" => user.git_username,
-   		"profile_url" => user.avatar_url,
-   		"type" => user.profile.name
+   		"profile_image" => user.avatar_url,
+   		"type" => user.profile.name,
+   		"profile_url" => user.profile_url
    	}
    end
-   result[:member] = info
+   result["member"] = info
    return result
   end
+
+  def create
+
+
+  end
+
+
+
 end
