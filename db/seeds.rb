@@ -1,7 +1,9 @@
-Status.create([{name:"Open"},{name:"Closed"}, {name:"Merged"}])
-PullRequestType.create([{name:"Bug"},{name:"Feature"}])
-Check.create([{name:"Test"},{name:"Documentation"},{name:"QA Passed"},{name:"Code Quality"}])
-Profile.create([{name:"DEVELOPER"},{name:"QA"}])
+# Status.create([{name:"Open"},{name:"Closed"}, {name:"Merged"}])
+# PullRequestType.create([{name:"Bug"},{name:"Feature"}])
+# Check.create([{name:"Test"},{name:"Documentation"},{name:"QA Passed"},{name:"Code Quality"}])
+# Profile.create([{name:"DEVELOPER"},{name:"QA"}])
+#TeamType.create([{name:"BAKCEND-DEV"},{name:"BAKCEND-TEST"},{name:"FRONTEND-DEV"},{name:"FRONTEND-TEST"}])
+
 
 # puts "profiles finished"
 
@@ -10,10 +12,10 @@ Profile.create([{name:"DEVELOPER"},{name:"QA"}])
 # end
 # puts "repos finished"
 
-# (1..20).each do |no|
-# 	Team.create(name: "team_#{no}")
-# end
-# puts "teams finished"
+(1..20).each do |no|
+	Team.create(name: "team_#{no}",team_type_id: 1)
+end
+puts "teams finished"
 
 # (1..50).each do |no|
 #   User.create({
@@ -21,7 +23,6 @@ Profile.create([{name:"DEVELOPER"},{name:"QA"}])
 #     "git_username" => "username_#{no}",
 #     "profile_url" => "https://github.com/kbkailashbagaria",
 #     "profile_id" => rand(1..2),
-#     "team_id" => rand(1..20),
 #     "avatar_url" => "https://avatars0.githubusercontent.com/u/4344556?v=3&s=460"
 #   })
 # end
