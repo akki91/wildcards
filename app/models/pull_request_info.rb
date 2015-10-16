@@ -25,6 +25,16 @@ class PullRequestInfo < ActiveRecord::Base
         check => pr_checks[pr.id].include?(check)
       }
       pr["participants"] = pr_participants[pr.id]
+      pr["author"] = {
+        "name" => pr["author_name"],
+        "profile_image" => pr["author_profile_image"],
+        "profile_url" => pr["author_profile_url"],
+        "type" => pr["author_type"]
+      }
+      pr.delete("author_name")
+      pr.delete("author_profile_image")
+      pr.delete("author_profile_url")
+      pr.delete("author_type")
     end   
   end
 
@@ -34,6 +44,7 @@ class PullRequestInfo < ActiveRecord::Base
               .joins(:type)
               .joins(:pull_request_type)
               .joins("INNER JOIN users as author on author.id = pull_request_infos.author_id")
+              .joins("INNER JOIN profiles on profiles.id = author.profile_id")
               .select("DISTINCT ON (pull_request_infos.id) pull_request_infos.id,
                 pull_request_infos.name as title,
                 statuses.name as status,
@@ -45,7 +56,8 @@ class PullRequestInfo < ActiveRecord::Base
                 repos.name as repo,
                 author.name as author_name,
                 author.profile_image as author_profile_image,
-                author.profile_url as author_profile_url
+                author.avatar_url as author_profile_url,
+                profiles.name as author_type
               ")
   end
 
@@ -62,34 +74,18 @@ class PullRequestInfo < ActiveRecord::Base
 
   def self.collect_participants pr_ids
     pr_participants = Hash.new { |hash, key| hash[key] = [] }
-    Assignee.joins(:user)
+    Assignee.joins(user: :profile)
             .where(pr_id: pr_ids)
-            .select("assignees.pr_id, users.name, users.profile_url, users.profile_image")
+            .select("assignees.pr_id, users.name, users.avatar_url as profile_url, users.profile_image, profiles.name as type")
             .each do |assignee|
               pr_participants[assignee.pr_id].push({
                 "name" => assignee.name,
                 "profile_image" => assignee.profile_image,
-                "profile_url" => assignee.profile_url
+                "profile_url" => assignee.profile_url,
+                "type" => assignee.type
                 })
             end
     return pr_participants
   end
 
 end
-
-
-
-# data:
-#   pull_requests: [
-#       {
-#           # closed_by: '@dxtr026'
-#           author:
-#               # type: 'developer'
-#           participants:[
-#               {
-#                   # type: 'developer'
-#               }
-
-#           ]
-#       }
-#   ]
