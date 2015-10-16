@@ -86,4 +86,17 @@ class PullRequestInfo < ActiveRecord::Base
     return pr_participants
   end
 
+  def test_merge_pr
+    # url = URI.parse("https://api.github.com/repos/#{self.author.git_username}/#{self.repo.name}/pulls/#{self.pr_id}/merge")
+    host = "https://api.github.com"
+    path = "/repos/hemantmundra/wildcards/pulls/37/merge"
+
+    req = Net::HTTP::Put.new(path, initheader = { 'Content-Type' => 'application/json'})
+    parameters = {}
+    parameters[:commit_message] = "merging"
+    parameters[:sha] = self.sha
+    req.body = parameters.to_json
+    response = Net::HTTP.new(host, port).start {|http| http.request(req) }
+  end
+
 end
