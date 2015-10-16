@@ -9,13 +9,14 @@ Rails.application.routes.draw do
 
   # Team APIs
   get 'teams'          => 'teams#index'
-  post 'teams'         => 'teams#create'
+  post 'teams'         => 'teams#create'  
   put 'teams/:id'   => 'teams#update' # Add or remove team members
   get 'teams/suggest'  => 'teams#autocomplete'
 
   # User APIs
-  get 'users/:id'      => 'users#show'
   get 'users/suggest'  => 'users#autocomplete'
+  get 'users/:id'      => 'users#show'
+  
 
   # Features
   get 'features'                => 'features#index'
