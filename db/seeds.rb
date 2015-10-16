@@ -12,10 +12,10 @@
 # end
 # puts "repos finished"
 
-(1..20).each do |no|
-	Team.create(name: "team_#{no}",team_type_id: 1)
-end
-puts "teams finished"
+# (1..20).each do |no|
+# 	Team.create(name: "team_#{no}",team_type_id: 1)
+# end
+# puts "teams finished"
 
 # (1..50).each do |no|
 #   User.create({
