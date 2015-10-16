@@ -1,2 +1,2 @@
 # wildcards
-2Housing Hackathon 
+Housing Hackathon 2.0
