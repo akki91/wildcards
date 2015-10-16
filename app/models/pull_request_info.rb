@@ -115,17 +115,25 @@ class PullRequestInfo < ActiveRecord::Base
     return pr_participants
   end
 
-  def test_merge_pr
-    # url = URI.parse("https://api.github.com/repos/#{self.author.git_username}/#{self.repo.name}/pulls/#{self.pr_id}/merge")
-    host = "https://api.github.com"
-    path = "/repos/hemantmundra/wildcards/pulls/37/merge"
+  def self.test_merge_pr
+    # url = URI.parse("https://api.github.com/repos/hemantmundra/wildcards/pulls/46/merge?access_token=64e15773a30686ff0f655cf3184086beb3f11dd1")
+    # req = Net::HTTP::Post.new(url.request_uri)
+    # req["Authorization"] ="64e15773a30686ff0f655cf3184086beb3f11dd1"
+    # req["Content-Type"] = "application/json"
+    # req.set_form_data('commit_message' => 'merging', 'sha' => '4dfa63eb0fdfdab86120120545d9da3443dc9c3a', 'access_token' => '64e15773a30686ff0f655cf3184086beb3f11dd1')
+    # http = Net::HTTP.new(url.host, url.port)
+    # http.use_ssl = (url.scheme == "https")
+    # response = http.request(req)
 
-    req = Net::HTTP::Put.new(path, initheader = { 'Content-Type' => 'application/json'})
-    parameters = {}
-    parameters[:commit_message] = "merging"
-    parameters[:sha] = self.sha
-    req.body = parameters.to_json
-    response = Net::HTTP.new(host, port).start {|http| http.request(req) }
+    uri = URI.parse("https://api.github.com/repos/hemantmundra/wildcards/pulls/46/merge")
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+    req = Net::HTTP::Post.new(uri.path)
+    payload = {"commit_message" => "merging", "sha" => "4dfa63eb0fdfdab86120120545d9da3443dc9c3a"}
+    req.body = payload.to_json
+    req["Authorization"] ="64e15773a30686ff0f655cf3184086beb3f11dd1"
+    req["Content-Type"] = "application/json"
+    response = http.request(req)
   end
 
 end
