@@ -2,6 +2,8 @@
 # PullRequestType.create([{name:"Bug"},{name:"Feature"}])
 # Check.create([{name:"Test"},{name:"Documentation"},{name:"QA Passed"},{name:"Code Quality"}])
 # Profile.create([{name:"DEVELOPER"},{name:"QA"}])
+#TeamType.create([{name:"BAKCEND-DEV"},{name:"BAKCEND-TEST"},{name:"FRONTEND-DEV"},{name:"FRONTEND-TEST"}])
+
 
 # puts "profiles finished"
 
@@ -11,7 +13,7 @@
 # puts "repos finished"
 
 # (1..20).each do |no|
-# 	Team.create(name: "team_#{no}")
+# 	Team.create(name: "team_#{no}",team_type_id: 1)
 # end
 # puts "teams finished"
 
