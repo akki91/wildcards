@@ -82,6 +82,9 @@ class PullRequestInfo < ActiveRecord::Base
     else
       prs = prs.order("pull_request_infos.repo_id")
     end
+    if filters["query"]
+      prs = prs.where("lower(pull_request_infos.name) LIKE ? ", "%#{filters["query"].downcase}%")
+    end
 
     prs
   end
