@@ -11,17 +11,10 @@ class LoginController < ApplicationController
 
     # extract the token and granted scopes
     access_token = JSON.parse(result)['access_token']
-    set_login_cookies access_token
-    render json: {:message => "Authentication Success"}, :status => 200 
+    render json: {:message => "Authentication Success" ,:token => access_token }, :status => 200 
   end
 
-  def set_login_cookies val
-    if root_url.start_with?("https")
-      cookies.permanent[:github_token] = {value: val, domain: '.housing.com', httponly: true, secure: true}
-    else
-      cookies.permanent[:github_token] = {value: val, domain: '.housing.com', httponly: true, secure: false}
-    end
-  end
+  
 
 
 end

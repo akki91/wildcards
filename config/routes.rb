@@ -59,4 +59,5 @@ Rails.application.routes.draw do
   #     resources :products
   #   end
   resources :tests
+  resources :pull_requests
 end
