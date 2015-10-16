@@ -5,7 +5,9 @@ class Team < ActiveRecord::Base
   	result = {}
   	result ={
   		"team_name" => team.name,
-  		"type" => team.team_type.name
+  		"type" => team.team_type.name,
+  		"created_at" => team.created_at
+
   	}
    	members = []
    	user_id = TeamMember.where(:id => team.id).pluck(:user_id)
