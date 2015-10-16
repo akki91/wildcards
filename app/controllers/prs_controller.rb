@@ -11,7 +11,35 @@ class PrsController < ApplicationController
   end
 
   def update
+    pr = PullRequestInfo.find(params[:id])
+    pr.update(params)
     render json: {}, status: 200
+  end
+
+  def update_pr_status
+    pr = PullRequestInfo.find(params[:id])
+    pr.status_id = Status.where(name:"Closed").first.id
+    merge_response = pr.merge_pr
+    if merge_response.code == "200" && pr.save
+      render json: {}, status: 200
+    elsif merge_response.code != "200"
+      render json: {errors: merge_response.body}, status: 422
+    else
+      render json: pr.errors.messages, status: 422
+    end
+  end
+
+  def merge_pr
+    # url = URI.parse("https://api.github.com/repos/#{self.author.git_username}/#{self.repo.name}/pulls/#{self.pr_id}/merge")
+    host = "https://api.github.com"
+    path = "/repos/#{self.author.git_username}/#{self.repo.name}/pulls/#{self.pr_id}/merge"
+
+    req = Net::HTTP::Put.new(path, initheader = { 'Content-Type' => 'application/json'})
+    parameters = {}
+    parameters[:commit_message] = "merging"
+    parameters[:sha] = self.sha
+    req.body = parameters.to_json
+    response = Net::HTTP.new(host, port).start {|http| http.request(req) }
   end
 
 end
