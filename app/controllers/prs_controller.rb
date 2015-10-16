@@ -29,16 +29,4 @@ class PrsController < ApplicationController
     end
   end
 
-  def merge_pr
-    uri = URI.parse("https://api.github.com/repos/#{self.author.git_username}/#{self.repo.name}/pulls/#{self.pr_id}/merge")
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = true
-    req = Net::HTTP::Post.new(uri.path)
-    payload = {"commit_message" => "merging", "sha" => self.sha}
-    req.body = payload.to_json
-    req["Authorization"] ="64e15773a30686ff0f655cf3184086beb3f11dd1"
-    req["Content-Type"] = "application/json"
-    response = http.request(req)
-  end
-
 end
