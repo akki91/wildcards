@@ -21,16 +21,22 @@ class PullRequestInfo < ActiveRecord::Base
     response["pull_requests"] = prs.map do |pr|
       pr["last_updated"] = pr["last_updated"].to_i
       pr["pr_due_date"] = pr["pr_due_date"].to_i
-      pr["checks"] = checks_superset.map{ |check|
-        {check => pr_checks[pr.id].include?(check)}
+      pr["checks"] = {}
+      checks_superset.map{ |check|
+        if pr_checks[pr.id].include?(check)
+          pr["checks"][check] = true
+        else
+          pr["checks"][check] = false
+        end
       }
       pr["participants"] = pr_participants[pr.id]
-      # pr["author"] = {
-      #   "name" => pr["author_name"],
-      #   "profile_image" => pr["author_profile_image"],
-      #   "profile_url" => pr["author_profile_url"],
-      #   "type" => pr["author_type"]
-      # }
+      pr["pr_author"] = {
+        "id" => pr["author_id"],
+        "name" => pr["author_name"],
+        "profile_image" => pr["author_profile_image"],
+        "profile_url" => pr["author_profile_url"],
+        "type" => pr["author_type"]
+      }
       pr
     end
     response   
@@ -62,7 +68,8 @@ class PullRequestInfo < ActiveRecord::Base
                 author.profile_url as author_profile_url,
                 profiles.name as author_type,
                 '' as checks,
-                '' as participants
+                '' as participants,
+                '' as pr_author
               ")
     if filters["repository"]
       prs = prs.where("lower(repos.name) = ?", filters["repository"].downcase)
