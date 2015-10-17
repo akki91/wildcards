@@ -21,17 +21,18 @@ class PullRequestInfo < ActiveRecord::Base
     response = Hash.new
     response["repos"] = Repo.pluck(:name)
     response["pull_requests"] = prs.map do |pr|
+      pr = pr.as_json.with_indifferent_access
       pr["last_updated"] = pr["last_updated"].to_i
       pr["pr_due_date"] = pr["pr_due_date"].to_i
       pr["checks"] = {}
       checks_superset.map{ |check|
-        if pr_checks[pr.id].include?(check)
+        if pr_checks[pr["id"]].include?(check)
           pr["checks"][check] = true
         else
           pr["checks"][check] = false
         end
       }
-      pr["participants"] = pr_participants[pr.id]
+      pr["participants"] = pr_participants[pr["id"]]
       pr["pr_author"] = {
         "id" => pr["author_id"],
         "name" => pr["author_name"],
