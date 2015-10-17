@@ -5,6 +5,8 @@ class PullRequestInfo < ActiveRecord::Base
   belongs_to :author, :class_name => "User"
   
   has_many :assignees, foreign_key: "pr_id"
+  has_many  :pull_request_checks, :class_name => "::PullRequestCheck", foreign_key: "pr_id"
+  has_many  :checks, :through => :pull_request_checks, :class_name => "::Check"
 
   # Filters: repository, status, type, participant
   # group_by: repository
@@ -21,16 +23,22 @@ class PullRequestInfo < ActiveRecord::Base
     response["pull_requests"] = prs.map do |pr|
       pr["last_updated"] = pr["last_updated"].to_i
       pr["pr_due_date"] = pr["pr_due_date"].to_i
-      pr["checks"] = checks_superset.map{ |check|
-        {check => pr_checks[pr.id].include?(check)}
+      pr["checks"] = {}
+      checks_superset.map{ |check|
+        if pr_checks[pr.id].include?(check)
+          pr["checks"][check] = true
+        else
+          pr["checks"][check] = false
+        end
       }
       pr["participants"] = pr_participants[pr.id]
-      # pr["author"] = {
-      #   "name" => pr["author_name"],
-      #   "profile_image" => pr["author_profile_image"],
-      #   "profile_url" => pr["author_profile_url"],
-      #   "type" => pr["author_type"]
-      # }
+      pr["pr_author"] = {
+        "id" => pr["author_id"],
+        "name" => pr["author_name"],
+        "profile_image" => pr["author_profile_image"],
+        "profile_url" => pr["author_profile_url"],
+        "type" => pr["author_type"]
+      }
       pr
     end
     response   
@@ -62,7 +70,8 @@ class PullRequestInfo < ActiveRecord::Base
                 author.profile_url as author_profile_url,
                 profiles.name as author_type,
                 '' as checks,
-                '' as participants
+                '' as participants,
+                '' as pr_author
               ")
     if filters["repository"]
       prs = prs.where("lower(repos.name) = ?", filters["repository"].downcase)
@@ -118,24 +127,24 @@ class PullRequestInfo < ActiveRecord::Base
     return pr_participants
   end
 
-  def merge_pr
+  def merge_pr(access_token)
     uri = URI.parse("https://api.github.com/repos/#{self.author.git_username}/#{self.repo.name}/pulls/#{self.pr_id}/merge")
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
     req = Net::HTTP::Post.new(uri.path)
     payload = {"commit_message" => "merging", "sha" => self.sha}
     req.body = payload.to_json
-    req["Authorization"] ="64e15773a30686ff0f655cf3184086beb3f11dd1"
+    req["Authorization"] = access_token
     req["Content-Type"] = "application/json"
     response = http.request(req)
   end
 
   def self.test_merge_pr
-    # url = URI.parse("https://api.github.com/repos/hemantmundra/wildcards/pulls/46/merge?access_token=64e15773a30686ff0f655cf3184086beb3f11dd1")
+    # url = URI.parse("https://api.github.com/repos/hemantmundra/wildcards/pulls/46/merge?access_token=access_token")
     # req = Net::HTTP::Post.new(url.request_uri)
-    # req["Authorization"] ="64e15773a30686ff0f655cf3184086beb3f11dd1"
+    # req["Authorization"] ="access_token"
     # req["Content-Type"] = "application/json"
-    # req.set_form_data('commit_message' => 'merging', 'sha' => '4dfa63eb0fdfdab86120120545d9da3443dc9c3a', 'access_token' => '64e15773a30686ff0f655cf3184086beb3f11dd1')
+    # req.set_form_data('commit_message' => 'merging', 'sha' => '4dfa63eb0fdfdab86120120545d9da3443dc9c3a', 'access_token' => 'access_token')
     # http = Net::HTTP.new(url.host, url.port)
     # http.use_ssl = (url.scheme == "https")
     # response = http.request(req)
@@ -144,9 +153,10 @@ class PullRequestInfo < ActiveRecord::Base
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
     req = Net::HTTP::Post.new(uri.path)
+    # req.basic_auth("hemantmundra", "born2fly")
     payload = {"commit_message" => "merging", "sha" => "4dfa63eb0fdfdab86120120545d9da3443dc9c3a"}
     req.body = payload.to_json
-    req["Authorization"] ="64e15773a30686ff0f655cf3184086beb3f11dd1"
+    req["Authorization"] ="access_token"
     req["Content-Type"] = "application/json"
     response = http.request(req)
   end
