@@ -44,10 +44,11 @@ module WebhooksHelper
     test_url = JSON.parse(params["pull_request"]["title"])["test_url"] rescue nil 
     doc_link = JSON.parse(params["pull_request"]["title"])["doc_link"] rescue nil 
     pr_type_id  = (PullRequestType.find_by_name(pr_type).id rescue 2) 
-    name = params["pull_request"]["title"]
+    name = JSON.parse(params["pull_request"]["title"])["name"] rescue nil
     assignee = params["pull_request"]["assignee"]
     puts "assignee: #{assignee}"
-    assignee_id = 1
+    assignee_id = nil
+    due_date = nil
     author_github_login = params["sender"]["login"] 
     author_id = (User.find_by_git_username(author_github_login).id rescue nil) if author_github_login
     repo_name = params["repository"]["full_name"]
@@ -60,7 +61,7 @@ module WebhooksHelper
       if pr
         pr.update(:status_id => 1, :sha => sha)
       else
-        PullRequestInfo.create({pr_url: pr_url, pr_id: pr_id, pr_type_id: pr_type_id, author_id: author_id, status_id: status_id, repo_id: repo_id, sha: sha, test_url: test_url, doc_link: doc_link})
+        PullRequestInfo.create({pr_url: pr_url, pr_id: pr_id, name: name, pr_type_id: pr_type_id, author_id: author_id, status_id: status_id, repo_id: repo_id, sha: sha, test_url: test_url, doc_link: doc_link, due_date: due_date})
       end
 
     when "closed"
