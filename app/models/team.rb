@@ -6,7 +6,7 @@ class Team < ActiveRecord::Base
     result ={
       "id" => team.id,
       "team_name" => team.name,
-      "type" => team.team_type.name,
+      "type" => (team.team_type.name rescue nil),
       "created_at" => team.created_at
 
     }
