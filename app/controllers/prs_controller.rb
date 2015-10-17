@@ -12,29 +12,39 @@ class PrsController < ApplicationController
   end
 
   def update
-    pr = PullRequestInfo.find(params[:pull_request_info][:id])
-    check_ids = find_check_ids(params)
-    deleted_check_ids = pr.check_ids - check_ids
-    new_check_ids = check_ids - pr.check_ids
-    pr.pull_request_checks.where(:check_id => deleted_check_ids).delete_all
-    new_check_ids.each do |new_id|
-      PullRequestCheck.create({check_id: new_id, pr_id: pr.id})
+    pr = PullRequestInfo.find(params[:pull_request_info][:id]) rescue nil
+    if pr.present?
+      check_ids = find_check_ids(params)
+      deleted_check_ids = pr.check_ids - check_ids
+      new_check_ids = check_ids - pr.check_ids
+      pr.pull_request_checks.where(:check_id => deleted_check_ids).delete_all
+      new_check_ids.each do |new_id|
+        PullRequestCheck.create({check_id: new_id, pr_id: pr.id})
+      end
+      assignees(params) if params[:pull_request_info][:participants].present?
+      type = params[:pull_request_info][:type].downcase rescue nil
+      pr.pr_type_id = PullRequestType.where("lower(name) = ?", type).first.id rescue nil
+      pr.update(pr_data)
+      render json: {}, status: 200
+    else
+      render json: {errors: {id: "not found"}}, status: 422
     end
-    assignees(params) if params[:pull_request_info][:participants].present?
-    pr.update(pr_data)
-    render json: {}, status: 200
   end
 
   def update_pr_status
-    pr = PullRequestInfo.find(params[:pull_request_info][:id])
-    pr.status_id = Status.where(name:"Closed").first.id
-    merge_response = pr.merge_pr(params[:pull_request_info][:access_token])
-    if merge_response.code == "200" && pr.save
-      render json: {}, status: 200
-    elsif merge_response.code != "200"
-      render json: {errors: merge_response.body}, status: 422
+    pr = PullRequestInfo.find(params[:pull_request_info][:id]) rescue nil
+    if pr.present?
+      pr.status_id = Status.where(name:"Closed").first.id
+      merge_response = pr.merge_pr(params[:pull_request_info][:access_token])
+      if merge_response.code == "200" && pr.save
+        render json: {}, status: 200
+      elsif merge_response.code != "200"
+        render json: {errors: merge_response.body}, status: 422
+      else
+        render json: pr.errors.messages, status: 422
+      end
     else
-      render json: pr.errors.messages, status: 422
+      render json: {errors: {id: "not found"}}, status: 422
     end
   end
 
@@ -56,6 +66,6 @@ class PrsController < ApplicationController
   end
 
   def pr_data
-    params.require(:pull_request_info).permit(:name, :due_date, :pr_type_id, :author_id, :status_id, :team_id, :dependent_pr_url, :test_url, :doc_link, :check_ids)
+    params.require(:pull_request_info).permit(:name, :due_date, :author_id, :status_id, :team_id, :dependent_pr_url, :test_url, :doc_link, :check_ids)
   end
 end
