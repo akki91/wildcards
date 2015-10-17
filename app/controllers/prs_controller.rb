@@ -52,10 +52,10 @@ class PrsController < ApplicationController
   def find_check_ids(params)
     check_ids = []
     return check_ids if params[:pull_request_info]["checks"].nil?
-    check_ids << Check.where(name:"QA Passed").first.id if params[:pull_request_info]["checks"]["testing"]=="true"
-    check_ids << Check.where(name:"Test").first.id if params[:pull_request_info]["checks"]["coverage"]=="true"
-    check_ids << Check.where(name:"Code Quality").first.id if params[:pull_request_info]["checks"]["quality"]=="true"
-    check_ids << Check.where(name:"Documentation").first.id if params[:pull_request_info]["checks"]["documentation"]=="true"
+    check_ids << Check.where(name:"testing").first.id if params[:pull_request_info]["checks"]["testing"]=="true"
+    check_ids << Check.where(name:"coverage").first.id if params[:pull_request_info]["checks"]["coverage"]=="true"
+    check_ids << Check.where(name:"quality").first.id if params[:pull_request_info]["checks"]["quality"]=="true"
+    check_ids << Check.where(name:"documentation").first.id if params[:pull_request_info]["checks"]["documentation"]=="true"
     return check_ids
   end
 
