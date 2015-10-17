@@ -5,6 +5,7 @@ class PullRequestInfo < ActiveRecord::Base
   belongs_to :author, :class_name => "User"
   
   has_many :assignees, foreign_key: "pr_id"
+  # has_many :checks, foreign_key: "pr_id", class_name: "PullRequestCheck"
 
   # Filters: repository, status, type, participant
   # group_by: repository
@@ -70,7 +71,7 @@ class PullRequestInfo < ActiveRecord::Base
                 '' as checks,
                 '' as participants,
                 '' as pr_author
-              ")
+              ").limit(5)
     if filters["repository"]
       prs = prs.where("lower(repos.name) = ?", filters["repository"].downcase)
     end

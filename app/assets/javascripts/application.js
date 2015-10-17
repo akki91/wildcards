@@ -10,9 +10,8 @@
 // Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-//= require jquery
+//= require jquery-2.1.4.min.js
+//= require highcharts.js
 //= require jquery_ujs
 //= require turbolinks
 //= require_tree .
-//= require highcharts
-//= require highcharts/highcharts-more

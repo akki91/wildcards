@@ -1,56 +1,143 @@
-<div id="container" style="width:100%; height:700px;"></div>
+<div id="container" style="width:100%; height:1300px;"></div>
+<script src="http://code.highcharts.com/stock/modules/exporting.js"></script>
 
 <script>
-
 $(function () {
-    $('#container').highcharts({
-        xAxis: {
-            categories: <%= @weeks %>
+
+    $('#container').highcharts("StockChart", {
+
+        rangeSelector : {
+            allButtonsEnabled: true,
+            buttons: [{
+                type: 'month',
+                count: 3,
+                text: 'Day',
+                dataGrouping: {
+                    forced: true,
+                    units: [['day', [1]]]
+                }
+            }, {
+                type: 'year',
+                count: 1,
+                text: 'Week',
+                dataGrouping: {
+                    forced: true,
+                    units: [['week', [1]]]
+                }
+            }, {
+                type: 'all',
+                text: 'Month',
+                dataGrouping: {
+                    forced: true,
+                    units: [['month', [1]]]
+                }
+            }],
+            buttonTheme: {
+                width: 60
+            },
+            selected: 2
         },
-        plotOptions: {
-            series: {
-                allowPointSelect: true
+
+        title : {
+            text : 'User Activity'
+        },
+
+        subtitle: {
+            text: '(Additions, Deletions & Commits across repositories)'
+        },
+
+        series : [{
+            name : 'additions',
+            data : <%= @additions %>,
+            marker: {
+                enabled: null, // auto
+                radius: 3,
+                lineWidth: 1,
+                lineColor: 'green'
+            },
+            tooltip: {
+                valueDecimals: 2
             }
         },
-        series: [{
-        		name: 'Additions',
-            data: <%= @additions %>,
-	          color: 'green'
-	        },
-	        {
-	        		name: 'Deletions',
-	            data: <%= @deletions %>,
-	            color: 'red'
-	        },
-	        {
-	        		name: 'Commits',
-	            data: <%= @commits %>,
-	            color: 'yellow'
-	        }
-        ]
-    });
-
-
-    // the button action
-    $('#button').click(function () {
-        var chart = $('#container').highcharts(),
-        selectedPoints = chart.getSelectedPoints();
-
-        if (chart.lbl) {
-            chart.lbl.destroy();
-        }
-        chart.lbl = chart.renderer.label('You selected ' + selectedPoints.length + ' points', 100, 60)
-            .attr({
-                padding: 10,
-                r: 5,
-                fill: Highcharts.getOptions().colors[1],
-                zIndex: 5
-            })
-            .css({
-                color: 'white'
-            })
-            .add();
+        {
+            name : 'deletions',
+            data : <%= @deletions %>,
+            marker: {
+                enabled: null, // auto
+                radius: 3,
+                lineWidth: 1,
+                lineColor: 'red'
+            },
+            tooltip: {
+                valueDecimals: 2
+            }
+        },
+        {
+            name : 'commits',
+            data : <%= @commits %>,
+            marker: {
+                enabled: null, // auto
+                radius: 3,
+                lineWidth: 1,
+                lineColor: 'blue'
+            },
+            tooltip: {
+                valueDecimals: 2
+            }
+        }]
     });
 });
+
+
+// $(function () {
+//     $('#container').highcharts({
+//         xAxis: {
+//             categories: <%#= @weeks %>
+//         },
+//         plotOptions: {
+//             series: {
+//                 allowPointSelect: true
+//             }
+//         },
+//         series: [{
+//         		name: 'Additions',
+//             data: <%= @additions %>,
+// 	          color: 'green'
+// 	        },
+// 	        {
+// 	        		name: 'Deletions',
+// 	            data: <%#= @deletions %>,
+// 	            color: 'red'
+// 	        },
+// 	        {
+// 	        		name: 'Commits',
+// 	            data: <%= @commits %>,
+// 	            color: 'yellow'
+// 	        }
+//         ]
+//     });
+
+
+//     // the button action
+//     $('#button').click(function () {
+//         var chart = $('#container').highcharts(),
+//         selectedPoints = chart.getSelectedPoints();
+
+//         if (chart.lbl) {
+//             chart.lbl.destroy();
+//         }
+//         chart.lbl = chart.renderer.label('You selected ' + selectedPoints.length + ' points', 100, 60)
+//             .attr({
+//                 padding: 10,
+//                 r: 5,
+//                 fill: Highcharts.getOptions().colors[1],
+//                 zIndex: 5
+//             })
+//             .css({
+//                 color: 'white'
+//             })
+//             .add();
+//     });
+// });
 
 </script>

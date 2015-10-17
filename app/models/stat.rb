@@ -1,4 +1,5 @@
 class Stat < ActiveRecord::Base
+  belongs_to :user
 
   def self.make_request path
     access_token = ''

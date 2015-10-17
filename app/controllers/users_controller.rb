@@ -18,11 +18,13 @@ class UsersController < ApplicationController
   end
 
   def stats
-    stats = Stat.where(user_id: 53).order(:week_start_date).select("week_start_date, addition, deletion, commits")
-    @weeks = stats.collect(&:week_start_date).map{|a| a.year}
-    @additions = stats.collect(&:addition)
-    @deletions = stats.collect(&:deletion)
-    @commits = stats.collect(&:commits)
+    stats = Stat.joins(:user).where("users.git_username = ?", params[:u])
+                .order(:week_start_date)
+                .group(:week_start_date)
+                .select("week_start_date, SUM(addition) as addition, SUM(deletion) as deletion, SUM(commits) as commits")
+    @additions = stats.map{|a| [a.week_start_date.to_i, a.addition]}
+    @deletions = stats.map{|a| [a.week_start_date.to_i, a.deletion]}
+    @commits = stats.map{|a| [a.week_start_date.to_i, a.commits]}
     render :stats
   end
 
