@@ -14,6 +14,33 @@ class Stat < ActiveRecord::Base
     response = http.get(path, headers)
     return response
   end
+
+  def self.fetch_prs page=1
+    path = "/repos/loconsolutions/housing.notifications/pulls?page=#{page}&state=all&sort=updated&direction=desc"
+    repo_id = Repo.where(name: "housing.notifications").first_or_create.id
+    response = make_request(path)
+    if response.code == "200" && !((JSON.parse(response.read_body)).empty?)
+      JSON.parse(response.read_body).each do |data|
+        author_id = User.where(git_username: data["user"]["login"]).first_or_create.id
+        status_id = Status.where("lower(name) = ?", data["state"].downcase).first.id
+        PullRequestInfo.create({
+          "name" => data["title"],
+          "pr_url" => data["html_url"],
+          "pr_id" => data["number"],
+          "author_id" => author_id,
+          "status_id" => status_id,
+          "merge_time" => data["merged_at"],
+          "repo_id" => repo_id,
+          "sha" => data["head"]["sha"]
+        })
+      end
+      fetch_prs(page+1)
+    else
+      puts "#{response.code} \n"
+      puts "#{JSON.parse(response.read_body)} \n"
+    end
+  end
+
   
   def self.fetch_all_repo_stats
     Repo.all.each do |repo|

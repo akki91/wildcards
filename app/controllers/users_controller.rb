@@ -41,7 +41,8 @@ class UsersController < ApplicationController
     @additions = stats.map{|a| [a.week_start_date.to_i, a.addition]}
     @deletions = stats.map{|a| [a.week_start_date.to_i, a.deletion]}
     @commits = stats.map{|a| [a.week_start_date.to_i, a.commits]}
-    render :stats
+    render json: {"additions" => @additions, "deletions" => @deletions, "commits" => @commits}, status: :ok
+    # render :stats
   end
 
 end
