@@ -1,7 +1,8 @@
-class CreateTeams < ActiveRecord::Migration
+class CreateRepos < ActiveRecord::Migration
   def change
-    create_table :teams do |t|
+    create_table :repos do |t|
       t.string :name
+
       t.timestamps null: false
     end
   end
