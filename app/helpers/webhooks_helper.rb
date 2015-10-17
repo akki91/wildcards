@@ -40,10 +40,10 @@ module WebhooksHelper
   def pull_request_event params
     pr_url = params["pull_request"]["html_url"] 
     pr_id = params["pull_request"]["id"]
-    pr_type = params["pull_request"]["title"]["pr_type"].downcase.capitalize rescue 2
-    test_url = params["pull_request"]["title"]["test_url"] rescue nil 
-    doc_link = params["pull_request"]["title"]["doc_link"] rescue nil 
-    pr_type_id  = (PullRequestType.find_by_name(pr_type).id rescue nil) 
+    pr_type = JSON.parse(params["pull_request"]["title"])["pr_type"].downcase.capitalize rescue "Feature"
+    test_url = JSON.parse(params["pull_request"]["title"])["test_url"] rescue nil 
+    doc_link = JSON.parse(params["pull_request"]["title"])["doc_link"] rescue nil 
+    pr_type_id  = (PullRequestType.find_by_name(pr_type).id rescue 2) 
     name = params["pull_request"]["title"]
     assignee = params["pull_request"]["assignee"]
     puts "assignee: #{assignee}"
