@@ -12,7 +12,7 @@ Rails.application.routes.draw do
   get 'teams/suggest'  => 'teams#autocomplete'
   get 'teams'          => 'teams#index'
   post 'teams'         => 'teams#create'  
-  put 'teams/:id'   => 'teams#update' # Add or remove team members
+  post '/update/teams/'   => 'teams#update' # Add or remove team members
   
 
   # User APIs

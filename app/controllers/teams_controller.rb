@@ -4,7 +4,6 @@ class TeamsController < ApplicationController
 
   def index
     teams = Team.all
-    # debugger
     response = Hash.new
     responses = Array.new
     teams.each do |team|
