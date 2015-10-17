@@ -17,4 +17,13 @@ class UsersController < ApplicationController
 
   end
 
+  def stats
+    stats = Stat.where(user_id: 53).order(:week_start_date).select("week_start_date, addition, deletion, commits")
+    @weeks = stats.collect(&:week_start_date).map{|a| a.year}
+    @additions = stats.collect(&:addition)
+    @deletions = stats.collect(&:deletion)
+    @commits = stats.collect(&:commits)
+    render :stats
+  end
+
 end

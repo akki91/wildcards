@@ -24,5 +24,5 @@ Rails.application.routes.draw do
   get 'features'                => 'features#index'
   get 'features/suggest'        => 'features#autocomplete'
 
-
+  get 'stats'            => 'users#stats'
 end
