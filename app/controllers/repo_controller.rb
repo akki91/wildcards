@@ -11,7 +11,7 @@ class RepoController < ApplicationController
       }
       response[:data] = result
     end
-    render json: {"result" => response}, status: :o
+    render json: {"result" => response}, status: 200
 
   end
 end
