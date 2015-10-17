@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   # PR APIs
   get 'prs'                     => 'prs#index'
   post 'prs/:id'                => 'prs#update'
-  post 'update_pr_status'                => 'prs#update_pr_status'
+  post 'update_pr_status'       => 'prs#update_pr_status'
 
   # Team APIs
   get 'teams/suggest'  => 'teams#autocomplete'
