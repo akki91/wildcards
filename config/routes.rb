@@ -25,4 +25,8 @@ Rails.application.routes.draw do
   get 'features/suggest'        => 'features#autocomplete'
 
   get 'stats'            => 'users#stats'
+
+  get 'suggest-pr-reviewer' => 'team#auto_suggest_reviewer' 
+  post 'delete-team'    => 'team#delete_team'
+  post 'update-team'    => 'team#update_team'
 end

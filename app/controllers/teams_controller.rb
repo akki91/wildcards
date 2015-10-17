@@ -49,4 +49,38 @@ class TeamsController < ApplicationController
     end
   end
 
+  def auto_suggest_reviewer
+    pr = PullRequestInfo.find_by_id(params[:id])
+    if pr
+      team_members = TeamMember.where(id: pr.team_id).pluck("id") if pr.team_id
+      open_status_id = Status.find_by_name("Open").id
+      result = PullRequestInfo.where(:team_id => pr.team_id, :status_id => open_status_id).where('created_at >= ?', Time.now-5.days).joins(:assignees).where("assignees.user_id" => team_members).group(:user_id).order('count_id ASC').count('id')
+      response = []
+      (result || {}).each do |key, value|
+        res = {}
+        res["id"] = key
+        res["name"] = User.find_by_id(key).git_username 
+        response.push(res)
+      end
+      render json: {"response" => response.in_groups(3, false).first}, status: 200
+
+    else
+      render json: {"message"=>"Unable to suggest"}, status: 400
+    end
+
+  end
+
+  def delete_team
+    team = Team.find_by_id(params[:team_id])
+    Team.delete(team) if team
+    render json: {"message" => "Success"}, status: 200
+  end
+
+  def update_team
+    team = Team.find_by_id(params[:team_id])
+    Team.update(team.id, :name => params[:name], :team_type_id => params[:team_type_id])
+    render json: {"message" => "Success"}, status: 200
+  end
+
+
 end
