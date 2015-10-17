@@ -4,17 +4,19 @@ class Team < ActiveRecord::Base
   def self.get_team_details(team)
     result = {}
     result ={
+      "id" => team.id,
       "team_name" => team.name,
       "type" => team.team_type.name,
       "created_at" => team.created_at
 
     }
     members = []
-    user_id = TeamMember.where(:id => team.id).pluck(:user_id)
+    user_id = TeamMember.where(:team_id => team.id).pluck(:user_id)
     users  = User.find(user_id)
     info = []
     users.map do |user|
       info << {
+      	"user_id" => user.id,
         "name" => user.git_username,
         "profile_image" => user.avatar_url,
         "type" => user.profile.name,
@@ -25,11 +27,7 @@ class Team < ActiveRecord::Base
     return result
   end
 
-  def create
 
-
-
-  end
 
 
 
