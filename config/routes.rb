@@ -30,4 +30,8 @@ Rails.application.routes.draw do
   get 'suggest-pr-reviewer' => 'teams#auto_suggest_reviewer' 
   post 'delete-team'    => 'teams#delete_team'
   post 'update-team'    => 'teams#update_team'
+
+  ##repo 
+
+  get 'repo'              => 'repo#index'
 end
