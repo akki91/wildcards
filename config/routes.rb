@@ -27,7 +27,7 @@ Rails.application.routes.draw do
 
   get 'stats'            => 'users#stats'
 
-  get 'suggest-pr-reviewer' => 'team#auto_suggest_reviewer' 
-  post 'delete-team'    => 'team#delete_team'
-  post 'update-team'    => 'team#update_team'
+  get 'suggest-pr-reviewer' => 'teams#auto_suggest_reviewer' 
+  post 'delete-team'    => 'teams#delete_team'
+  post 'update-team'    => 'teams#update_team'
 end
