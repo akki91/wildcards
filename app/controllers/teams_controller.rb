@@ -17,7 +17,7 @@ class TeamsController < ApplicationController
 
   def create
     t = Team.new
-    t.name = params = params[:team_name]
+    t.name = params[:team_name]
     t.team_type_id = params[:type]
     if t.save
       render json: {"message"=>"Success"}, status: 200
