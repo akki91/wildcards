@@ -54,6 +54,7 @@ class PullRequestInfo < ActiveRecord::Base
               .joins("LEFT OUTER JOIN pull_request_types on pull_request_types.id = pull_request_infos.pr_type_id")
               .joins("INNER JOIN users as author on author.id = pull_request_infos.author_id")
               .joins("LEFT OUTER JOIN profiles on profiles.id = author.profile_id")
+              .order(created_at: :desc)
               .select("pull_request_infos.id,
                 pull_request_infos.name as title,
                 statuses.name as pr_status,
