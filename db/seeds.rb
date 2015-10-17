@@ -1,6 +1,6 @@
 # Status.create([{name:"Open"},{name:"Closed"}, {name:"Merged"}])
 # PullRequestType.create([{name:"Bug"},{name:"Feature"}])
-# Check.create([{name:"Test"},{name:"Documentation"},{name:"QA Passed"},{name:"Code Quality"}])
+# Check.create([{name:"testing"},{name:"documentation"},{name:"coverage"},{name:"quality"}])
 # Profile.create([{name:"DEVELOPER"},{name:"QA"}])
 #TeamType.create([{name:"BAKCEND-DEV"},{name:"BAKCEND-TEST"},{name:"FRONTEND-DEV"},{name:"FRONTEND-TEST"}])
 
