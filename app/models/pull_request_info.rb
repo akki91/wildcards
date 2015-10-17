@@ -51,9 +51,9 @@ class PullRequestInfo < ActiveRecord::Base
   def self.collect_prs filters
     prs = self.joins(:status)
               .joins(:repo)
-              .joins(:pull_request_type)
+              .joins("LEFT OUTER JOIN pull_request_types on pull_request_types.id = pull_request_infos.pr_type_id")
               .joins("INNER JOIN users as author on author.id = pull_request_infos.author_id")
-              .joins("INNER JOIN profiles on profiles.id = author.profile_id")
+              .joins("LEFT OUTER JOIN profiles on profiles.id = author.profile_id")
               .select("pull_request_infos.id,
                 pull_request_infos.name as title,
                 statuses.name as pr_status,
@@ -73,7 +73,7 @@ class PullRequestInfo < ActiveRecord::Base
                 '' as checks,
                 '' as participants,
                 '' as pr_author
-              ").limit(5)
+              ").limit(10)
     if filters["repository"]
       prs = prs.where("lower(repos.name) = ?", filters["repository"].downcase)
     end
