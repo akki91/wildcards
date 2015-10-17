@@ -18,6 +18,7 @@ Rails.application.routes.draw do
   # User APIs
   get 'users/suggest'  => 'users#autocomplete'
   get 'users/:id'      => 'users#show'
+  get 'users'          =>  'users#index'  
   
 
   # Features
