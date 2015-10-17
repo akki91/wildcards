@@ -5,6 +5,8 @@ class PullRequestInfo < ActiveRecord::Base
   belongs_to :author, :class_name => "User"
   
   has_many :assignees, foreign_key: "pr_id"
+  has_many  :pull_request_checks, :class_name => "::PullRequestCheck", foreign_key: "pr_id"
+  has_many  :checks, :through => :pull_request_checks, :class_name => "::Check"
 
   # Filters: repository, status, type, participant
   # group_by: repository
@@ -118,14 +120,14 @@ class PullRequestInfo < ActiveRecord::Base
     return pr_participants
   end
 
-  def merge_pr
+  def merge_pr(access_token)
     uri = URI.parse("https://api.github.com/repos/#{self.author.git_username}/#{self.repo.name}/pulls/#{self.pr_id}/merge")
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
     req = Net::HTTP::Post.new(uri.path)
     payload = {"commit_message" => "merging", "sha" => self.sha}
     req.body = payload.to_json
-    req["Authorization"] ="64e15773a30686ff0f655cf3184086beb3f11dd1"
+    req["Authorization"] = access_token
     req["Content-Type"] = "application/json"
     response = http.request(req)
   end
@@ -144,6 +146,7 @@ class PullRequestInfo < ActiveRecord::Base
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
     req = Net::HTTP::Post.new(uri.path)
+    # req.basic_auth("hemantmundra", "born2fly")
     payload = {"commit_message" => "merging", "sha" => "4dfa63eb0fdfdab86120120545d9da3443dc9c3a"}
     req.body = payload.to_json
     req["Authorization"] ="64e15773a30686ff0f655cf3184086beb3f11dd1"
